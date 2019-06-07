@@ -8,14 +8,14 @@ def play_game(agent_1, agent_2, environnement, show=False):
 
     while not environnement.is_over():
 
+        if show:
+            environnement.show()
+            
         current_player.take_action(environnement)
 
         current_player = agent_1 if current_player == agent_2 else agent_2
 
         current_state = environnement.current_state()
-
-        if show:
-            environnement.show()
 
         agent_1.update_history(current_state)
         agent_2.update_history(current_state)
@@ -34,9 +34,10 @@ class State:
 
 class Agent:
 
-    def __init__(self):
+    def __init__(self, mark):
         self._history = []
         self.V = []
+        self._mark = mark
     
     def create_game_tree(self):
         self._tree = State()
@@ -51,13 +52,11 @@ class Agent:
         pass
 
 class AgentUser(Agent):
-    def __init__(self, mark):
-        self._mark = mark
 
     def take_action(self, environnement):
         x = int(input('X: '))
         y = int(input('Y: '))
-        environnement.action(x,y, self.mark)        
+        environnement.action(x,y, self._mark)        
 
 if __name__ == '__main__':
     agent_1 = AgentUser('O')
