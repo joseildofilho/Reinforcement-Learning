@@ -1,3 +1,5 @@
+from rules import Rules
+
 class Environnement:
     '''
         Class that describes the environnement, and 
@@ -14,8 +16,9 @@ class Environnement:
         return self._board
 
     def is_over(self):
-        return False
-
+        result = Rules.test_victory(self._board) or Rules.test_draw(self._board)
+        print(result)
+        return result
     def show(self):
         print("-" * 5)
         for line in self._board:
