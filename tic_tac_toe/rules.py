@@ -12,13 +12,13 @@ class Rules:
                 return line[0]
 
         for column in range(0, len(board)):
-            column = []
+            column_ = []
 
             for line in board:
-                column.append(line[column])
+                column_.append(line[column])
 
-            if Rules.check_line(column):
-                return column[0]
+            if Rules.check_line(column_):
+                return column_[0]
 
         left_diagonal  = []
         right_diagonal = []
@@ -35,7 +35,7 @@ class Rules:
 
     @staticmethod
     def test_draw(board):
-        if not self.test_victory(environnement):
+        if not Rules.test_victory(board):
             for line in board:
                 if '' in line:
                     return False
