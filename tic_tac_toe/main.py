@@ -32,6 +32,7 @@ def play_game(agent_1, agent_2, environnement, show=False):
 class State:
     def __init__(self, state=None):
         self.current = [['' for _ in range(3)] for _ in range(3)]
+        self.v = 0.5
         self.s_p = []
         if state:
             self.current = state.current
@@ -44,12 +45,26 @@ class Agent:
         self._history = []
         self.V = []
         self._mark = mark
+        self._enemy_mark = mark + '@'
     
     def create_game_tree(self):
         self._tree = State()
 
     def _game_tree_rec(self, state):
-        pass
+        victory = Rules.test_victory(state.current)
+        draw = Rules.test_draw(state.current)
+        if not victory or draw:
+            state.s_p =  State.fill_empty(self._mark)
+            state.s_p += State.fill_empty(self._enemy_mark)
+            for state_ in state.s_p:
+                self._game_tree_rec(state_)
+        elif victory:
+            if victory == self._mark:
+                state.v = 1
+            else:
+                state.v = -1
+        elif draw:
+            state.v = 0
 
     def take_action(self, environnement):
         pass
