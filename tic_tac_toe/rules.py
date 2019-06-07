@@ -9,6 +9,7 @@ class Rules:
         '''
         for line in board:
             if Rules.check_line(line):
+                print('-----------------------------')
                 return line[0]
 
         for column in range(0, len(board)):
@@ -44,11 +45,9 @@ class Rules:
 
     def check_line(line):
         first = line[0]
-
-        for item in range(1,len(line)):
-            if item != first:
+        for item in line:
+            if item != first or item == '':
                 return False
-
         return True
 
 

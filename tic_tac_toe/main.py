@@ -6,12 +6,14 @@ def play_game(agent_1, agent_2, environnement, show=False):
 
     current_player = agent_1
 
-    while not environnement.is_over():
+    test = environnement.is_over()
+
+    while not test:
+ 
+        current_player.take_action(environnement)
 
         if show:
             environnement.show()
-            
-        current_player.take_action(environnement)
 
         current_player = agent_1 if current_player == agent_2 else agent_2
 
@@ -20,8 +22,12 @@ def play_game(agent_1, agent_2, environnement, show=False):
         agent_1.update_history(current_state)
         agent_2.update_history(current_state)
 
+        test = environnement.is_over()
+
     agent_1.update_value_fun(environnement)
     agent_2.update_value_fun(environnement)
+
+    return test
 
 class State:
     def __init__(self, state=None):
@@ -49,6 +55,9 @@ class Agent:
         pass
 
     def update_history(self, environnement):
+        pass
+
+    def update_value_fun(self, environnement):
         pass
 
 class AgentUser(Agent):

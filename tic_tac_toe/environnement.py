@@ -16,9 +16,13 @@ class Environnement:
         return self._board
 
     def is_over(self):
-        result = Rules.test_victory(self._board) or Rules.test_draw(self._board)
-        print(result)
-        return result
+        result = Rules.test_victory(self._board)
+        if result:
+            return result
+        result = Rules.test_draw(self._board)
+        if result:
+            return result
+        return False
     def show(self):
         print("-" * 5)
         for line in self._board:
