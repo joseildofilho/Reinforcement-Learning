@@ -9,7 +9,6 @@ class Rules:
         '''
         for line in board:
             if Rules.check_line(line):
-                print('-----------------------------')
                 return line[0]
 
         for column in range(0, len(board)):
@@ -22,10 +21,12 @@ class Rules:
                 return column_[0]
 
         left_diagonal  = []
-        right_diagonal = []
         for line in board:
             left_diagonal.append(line[len(left_diagonal)])
-            right_diagonal.append(line[len(line) - len(left_diagonal) - 1])
+
+        right_diagonal = [] 
+        for line in board:
+            right_diagonal.append(line[-1 - len(right_diagonal)])
 
         if Rules.check_line(left_diagonal):
             return left_diagonal[0]
