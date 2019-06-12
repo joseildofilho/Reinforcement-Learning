@@ -1,4 +1,5 @@
 from rules import Rules
+from state import State
 
 class Environnement:
     '''
@@ -7,25 +8,27 @@ class Environnement:
     '''
 
     def __init__(self):
-        self._board = [["" for _ in range(3)] for _ in range(3)]
+        self._board = State()
 
     def action(self, x, y, agent):
-        self._board[x][y] = agent
+        self._board.current[x][y] = agent
 
     def current_state(self):
-        return self._board
-
+        s = State()
+        s.current = self._board._copy_current()
+        return s
     def is_over(self):
-        result = Rules.test_victory(self._board)
+        result = Rules.test_victory(self._board.current)
         if result:
             return result
-        result = Rules.test_draw(self._board)
+        result = Rules.test_draw(self._board.current)
         if result:
             return result
         return False
+
     def show(self):
         print("-" * 5)
-        for line in self._board:
+        for line in self._board.current:
             l = ""
             for item in line:
                 if item == '':

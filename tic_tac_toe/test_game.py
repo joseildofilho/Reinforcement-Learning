@@ -88,3 +88,4 @@ class TestGame(unittest.TestCase):
     def test_check_line_true(self):
         x = ["o", "o", "o"]
         self.assertTrue(Rules.check_line(x))
+

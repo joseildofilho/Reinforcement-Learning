@@ -1,6 +1,7 @@
 from random import random
 from rules import Rules
 from environnement import Environnement
+from state import State
 
 def play_game(agent_1, agent_2, environnement, show=False):
 
@@ -15,7 +16,10 @@ def play_game(agent_1, agent_2, environnement, show=False):
         if show:
             environnement.show()
 
-        current_player = agent_1 if current_player == agent_2 else agent_2
+        if current_player == agent_1:
+            current_player = agent_2
+        else:
+            current_player = agent_1
 
         current_state = environnement.current_state()
 
@@ -23,56 +27,26 @@ def play_game(agent_1, agent_2, environnement, show=False):
         agent_2.update_history(current_state)
 
         test = environnement.is_over()
+    if show:    
+        print("Updating Value function ...")
 
     agent_1.update_value_fun(environnement)
     agent_2.update_value_fun(environnement)
 
     return test
 
-class State:
-    def __init__(self, state=None):
-        self.current = [['' for _ in range(3)] for _ in range(3)]
-        self.v = 0.5
-        self.s_p = []
-        self._last = ""
-        if state:
-            self.current = state.current
-            self.v = state._last
-            self.s_p = state.s_p
-            self._last = state._last
-
-    def fill_empty(self, mark):
-        states = []
-        if self._last == mark:
-            return states
-
-        for index, line in enumerate(self.current):
-            for j, item in enumerate(line):
-                if item == '': 
-                    state = State()
-                    state._last = mark
-                    board = self._copy_current()
-                    board[index][j] = mark
-                    state.current = board
-                    states.append(state)
-        return states
-
-    def _copy_current(self):
-        copy = self.current.copy()
-        for i, l in enumerate(self.current):
-            copy[i] = l.copy()
-        return copy
-
 class Agent:
 
-    def __init__(self, mark):
+    def __init__(self, mark, enemy_mark=None):
         self._history = []
-        self.V = []
         self._mark = mark
-        self._enemy_mark = mark + '@'
+        self._enemy_mark = enemy_mark if enemy_mark else mark + '@'
+        self._has_tree = False
+        self.alpha = 0.5
     
     def create_game_tree(self):
         self._tree = State()
+        self._has_tree = True
         self._game_tree_rec(self._tree)
 
     def _game_tree_rec(self, state):
@@ -94,12 +68,42 @@ class Agent:
     def take_action(self, environnement):
         pass
 
-    def update_history(self, environnement):
-        pass
-
+    def update_history(self, state):
+        if self._has_tree:
+            if len(self._history) == 0:
+                self._history.append(self._tree)
+            last = self._history[-1]
+            # theres a bug
+            i = last.s_p.index(state)
+            self._history.append(last.s_p[i])
+ 
     def update_value_fun(self, environnement):
-        pass
+        value = self._history[-1].v
+        for state in self._history[::-1]:
+            state.v -= self.alpha * value
+            value = state.v
 
+    def new_game(self):
+        self._history = []
+
+class AgentAuto(Agent):
+
+    def take_action(self, environnement):
+        if len(self._history):
+            action = self._history[-1]
+        else:
+            action = self._tree
+            self._history.append(action)
+
+        futures = action.s_p
+        next_action = futures[0]
+        for state in futures:
+            if next_action.v <= state.v:
+                next_action = state
+
+        pos = action.diff(next_action)
+        environnement.action(pos[0], pos[1], self._mark)
+        
 class AgentUser(Agent):
 
     def take_action(self, environnement):
@@ -108,10 +112,37 @@ class AgentUser(Agent):
         environnement.action(x,y, self._mark)        
 
 if __name__ == '__main__':
-    agent_1 = AgentUser('O')
+
+    agent_1_mark = 'O'
+    agent_2_mark = 'X'
+
+    agent_1 = AgentAuto(agent_1_mark, agent_2_mark)
+    agent_2 = AgentAuto(agent_2_mark, agent_1_mark)
+
     agent_1.create_game_tree()
-    agent_2 = AgentUser('X')
+    agent_2.create_game_tree()
 
-    environnement = Environnement()
+    agent_1_win = 0
+    agent_2_win = 0
+    draw = 0
 
-    play_game(agent_1, agent_2, environnement, True)
+    for i in range(100000):
+        environnement = Environnement()
+    
+        agent_1.new_game()
+        agent_2.new_game()
+
+        if i % 2 == 0:
+            win = play_game(agent_2, agent_1, environnement)
+        else:
+            win = play_game(agent_1, agent_2, environnement)
+
+        if agent_1_mark == win:
+            agent_1_win += 1
+        elif agent_2_mark == win:
+            agent_2_win += 1
+        else:
+            draw += 1
+
+    print(agent_1_win, agent_2_win, draw)
+            
