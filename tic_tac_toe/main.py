@@ -27,6 +27,7 @@ def play_game(agent_1, agent_2, environnement, show=False):
         agent_2.update_history(current_state)
 
         test = environnement.is_over()
+
     if show:    
         print("Updating Value function ...")
 
@@ -78,10 +79,11 @@ class Agent:
             self._history.append(last.s_p[i])
  
     def update_value_fun(self, environnement):
-        value = self._history[-1].v
-        for state in self._history[::-1]:
-            state.v -= self.alpha * value
-            value = state.v
+        if self._has_tree:
+            value = self._history[-1].v
+            for state in self._history[::-1]:
+                state.v -= self.alpha * value
+                value = state.v
 
     def new_game(self):
         self._history = []
@@ -126,7 +128,7 @@ if __name__ == '__main__':
     agent_2_win = 0
     draw = 0
 
-    for i in range(100000):
+    for i in range(1000000):
         environnement = Environnement()
     
         agent_1.new_game()
@@ -145,4 +147,12 @@ if __name__ == '__main__':
             draw += 1
 
     print(agent_1_win, agent_2_win, draw)
-            
+
+    agent_1 = AgentUser(agent_1_mark, agent_2_mark)
+
+    for i in range(5):
+        environnement = Environnement()
+
+        agent_2.new_game()
+
+        play_game(agent_1, agent_2, environnement, show=True)       
