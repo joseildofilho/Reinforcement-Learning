@@ -43,18 +43,25 @@ class GridWorld:
         '''
         if action in self._actions[(self._i, self._j)]:
             if   action == 'U':
-                self._i += 1
-
-            elif action == 'D':
                 self._i -= 1
 
-            elif action == 'L':
-                self._j += 1
+            elif action == 'D':
+                self._i += 1
 
-            elif action == 'R':
+            elif action == 'L':
                 self._j -= 1
 
+            elif action == 'R':
+                self._j += 1
+
         return self._rewards.get((self._i, self._j), 0)
+
+    def all_states(self):
+        '''
+            Creates a set of all states available
+        '''
+        
+        return set(list(self._actions.keys()) + list(self._rewards.keys()))
     
     @staticmethod
     def default_game():
