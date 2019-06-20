@@ -41,7 +41,7 @@ class GridWorld:
         '''
             Make's amove and return the reward of the new state
         '''
-        if action in self._actions[(self._i, self._j)]:
+        if action in self._actions.get((self._i, self._j), []):
             if   action == 'U':
                 self._i -= 1
 
