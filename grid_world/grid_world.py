@@ -87,6 +87,27 @@ class GridWorld:
 
         return GridWorld(3, 4, (0, 2), actions, rewards)
 
+    @staticmethod
+    def painful_game(damage = -0.1):
+
+        grid = GridWorld.default_game()
+
+        grid._rewards = {
+                (0,3): 1,
+                (1,3): -1,
+                (0,0): damage,
+                (0,1): damage,
+                (0,2): damage,
+                (1,0): damage,
+                (1,2): damage,
+                (2,0): damage,
+                (2,1): damage,
+                (2,2): damage,
+                (2,3): damage
+                }
+
+        return grid
+
 if __name__ == '__main__':
     grid = GridWorld.default_game()
 
