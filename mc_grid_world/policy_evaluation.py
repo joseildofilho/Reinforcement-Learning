@@ -40,19 +40,19 @@ def generate_episode(grid_world, policy):
 
     grid_world.set_state(action_start)
 
-    history = [grid_world.current_state()]
+    history = [grid_world.current_state()] # state
 
-    history.append(policy[history[-1]])
+    history.append(policy[history[-1]]) # action
+
+    history.append(grid_world.move(history[-1])) # reward
 
     while (i < T_max) and (not grid_world.is_terminal(grid_world.current_state())):
-        history.append(grid_world.move(history[-1]))
-
-        if grid_world.is_terminal(grid_world.current_state()):
-            break
 
         history.append(grid_world.current_state())
 
         history.append(policy[history[-1]])
+
+        history.append(grid_world.move(history[-1])) # reward
 
         i += 1
 
@@ -91,7 +91,7 @@ for _ in range(1000):
     episode = generate_episode(grid_world, policy)
     occurences = set()
 
-    for state, action, reward in zip(episode[0::3], episode[1::3], episode[2::3]):
+    for state, action, reward in zip(episode[-3::-3], episode[-2::-3], episode[-1::-3]):
         if state not in occurences:
             occurences.add(state)
             returns[state].append(reward)
