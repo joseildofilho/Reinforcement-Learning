@@ -23,7 +23,7 @@ def show_policy(V):
     print(line)
 
 
-grid_world = GridWorld.painful_game(-1)
+grid_world = GridWorld.painful_game()
 
 states = grid_world.all_states()
 
@@ -39,11 +39,11 @@ V = {
 #creates the inital policy
 policy = {action: random.choice(ALL_ACTIONS) for action in grid_world._actions}
 
-gamma = 0.1
+gamma = 0.9
 
 Theta = 0.001
 
-windy = 0.5 # the probability of movement, for any side
+windy = 0.9 # the probability of movement, for any side
 
 '''
     The main loops of this process, it's stoped later
