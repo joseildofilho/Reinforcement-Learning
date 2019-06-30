@@ -74,12 +74,23 @@ V = {
 
 #creates the inital policy
 policy = {action: random.choice(ALL_ACTIONS) for action in grid_world._actions}
+policy = { # a good policy, makes easy to know if works
+        (0,0): "R",
+        (0,1): "R",
+        (0,2): "R",
+        (1,0): "U",
+        (1,2): "R",
+        (2,0): "R",
+        (2,1): "R",
+        (2,2): "R",
+        (2,3): "U",
+        }
 
 #creates a list of returns for each state
 #PS: we use _actions because all the states have an action, except terminal states
-returns = {state: [] for state in grid_world._actions}
+returns = {state: 0 for state in grid_world._actions}
 
-gamma = 0.1
+gamma = 0.9
 
 Theta = 0.001
 
@@ -90,12 +101,13 @@ Theta = 0.001
 for _ in range(1000):
     episode = generate_episode(grid_world, policy)
     occurences = set()
-
+    G = 0
     for state, action, reward in zip(episode[-3::-3], episode[-2::-3], episode[-1::-3]):
+        G = gamma * G + reward
         if state not in occurences:
             occurences.add(state)
-            returns[state].append(reward)
-            update_V(state, reward, V)
+            returns[state] = G
+            update_V(state, returns[state], V)
 
 show_V(V)
 show_policy(policy)
