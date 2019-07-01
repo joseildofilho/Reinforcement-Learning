@@ -26,6 +26,12 @@ class GridWorld:
         self._i = start[0]
         self._j = start[1]
 
+    def restart(self, start):
+        '''
+            Restart the grid world to the start state
+        '''
+        self.set_state(self._start)
+
     def current_state(self):
         '''
             the current state of the game
