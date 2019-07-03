@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 def show_V(V):
     line = '-' * 10
@@ -27,7 +28,35 @@ def show_policy(V):
 #All possible actions
 ALL_ACTIONS = ['U', 'D', 'L', 'R']
 
+def get_action(actions):
+    acts = []
+    P    = []
+    for action in actions:
+        acts.append(action)
+        P.append(actions[action])
+
+    return np.random.choice(acts, p=P)
+    
 T_max = 100
+
+def generate_episode_from_e_policy(grid_world, policy):
+    history = []
+
+    history.append(grid_world.current_state())
+    history.append(get_action(policy[history[-1]]))
+    history.append(grid_world.move(history[-1]))
+
+    while not grid_world.is_terminal(grid_world.current_state()):
+
+        history.append(grid_world.current_state())
+        history.append(get_action(policy[history[-1]]))
+        history.append(grid_world.move(history[-1]))
+
+    return history
+
+
+    
+
 
 def generate_episode_random_start(grid_world, policy):
 

@@ -26,7 +26,7 @@ class GridWorld:
         self._i = start[0]
         self._j = start[1]
 
-    def restart(self, start):
+    def restart(self):
         '''
             Restart the grid world to the start state
         '''
@@ -93,7 +93,7 @@ class GridWorld:
                 (1,3): -1
                 }
 
-        return GridWorld(3, 4, (0, 2), actions, rewards)
+        return GridWorld(3, 4, (2, 0), actions, rewards)
 
     @staticmethod
     def painful_game(damage = -0.1):
