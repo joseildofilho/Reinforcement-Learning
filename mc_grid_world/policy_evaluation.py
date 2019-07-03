@@ -19,8 +19,7 @@ V = {
             }
 
 #creates the inital policy
-policy = {action: random.choice(ALL_ACTIONS) for action in grid_world._actions}
-policy = { # a good policy, makes easy to know if works
+policy = { # a policy, makes easy to know if works
         (0,0): "R",
         (0,1): "R",
         (0,2): "R",
@@ -45,7 +44,8 @@ Theta = 0.001
     The main loops of this process, it's stoped later
 '''
 for _ in range(1000):
-    episode = generate_episode_random_start(grid_world, policy)
+    grid_world.restart()
+    episode = generate_episode(grid_world, policy)
     occurences = set()
     G = 0
     for state, action, reward in zip(episode[-3::-3], episode[-2::-3], episode[-1::-3]):

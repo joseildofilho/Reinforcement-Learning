@@ -30,27 +30,43 @@ ALL_ACTIONS = ['U', 'D', 'L', 'R']
 T_max = 100
 
 def generate_episode_random_start(grid_world, policy):
-    i = 0
 
     action_start = random.choice(list(grid_world._actions.keys()))
 
     grid_world.set_state(action_start)
 
-    history = [grid_world.current_state()] # state
+    return generate_episode(grid_world, policy)
+
+def generate_episode(grid_world, policy):
+    '''
+        Only works for deterministic policy
+    '''
+
+    history = [] # state
+
+    states_set = set()
+
+    state = grid_world.current_state()
+
+    history.append(state)
+
+    states_set.add(state)
 
     history.append(policy[history[-1]]) # action
-
     history.append(grid_world.move(history[-1])) # reward
 
-    while (i < T_max) and (not grid_world.is_terminal(grid_world.current_state())):
+    while ((not grid_world.is_terminal(grid_world.current_state())) 
+        and not grid_world.current_state() in states_set):
 
-        history.append(grid_world.current_state())
+        state = grid_world.current_state()
+
+        history.append(state)
+        states_set.add(state)
 
         history.append(policy[history[-1]])
 
         history.append(grid_world.move(history[-1])) # reward
 
-        i += 1
-
     return history
+
 
